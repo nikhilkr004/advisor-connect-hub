@@ -37,9 +37,8 @@ const DashboardPage = () => {
 
         if (docSnap.exists()) {
           setProfile(docSnap.data() as AdvisorProfile);
-        } else {
-          navigate("/onboarding");
         }
+        // No redirect to onboarding if missing
       } catch (error) {
         console.error("Error fetching profile:", error);
       } finally {

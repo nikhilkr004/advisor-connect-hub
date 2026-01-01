@@ -42,17 +42,15 @@ const LoginPage = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Check if advisor exists in Firestore
+      // Check if advisor exists in Firestore (Optional check for toast, but always go to dashboard)
       const advisorDoc = await getDoc(doc(db, "advisors", user.uid));
 
       if (advisorDoc.exists()) {
         toast.success(`Welcome back, ${user.displayName || "Advisor"}!`);
-        navigate("/dashboard");
       } else {
-        // Advisor doesn't exist - go to onboarding
-        toast.info("Please complete your profile to continue");
-        navigate("/onboarding");
+        toast.success("Welcome! Please complete your profile in the Profile tab.");
       }
+      navigate("/dashboard");
     } catch (error: any) {
       console.error("Google sign in error:", error);
 
