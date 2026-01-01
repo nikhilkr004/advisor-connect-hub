@@ -25,8 +25,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const user = auth.currentUser;
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (!user) {
         navigate("/login");
         return;
@@ -39,7 +38,6 @@ const DashboardPage = () => {
         if (docSnap.exists()) {
           setProfile(docSnap.data() as AdvisorProfile);
         } else {
-          // If no profile, redirect to onboarding
           navigate("/onboarding");
         }
       } catch (error) {
@@ -47,9 +45,9 @@ const DashboardPage = () => {
       } finally {
         setIsLoading(false);
       }
-    };
+    });
 
-    fetchProfile();
+    return () => unsubscribe();
   }, [navigate]);
 
   if (isLoading) {
