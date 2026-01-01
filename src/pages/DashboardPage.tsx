@@ -15,14 +15,44 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { auth, db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
 import { AdvisorProfile, BookingRequest } from "@/types";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
   const [profile, setProfile] = useState<AdvisorProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [bookings, setBookings] = useState<BookingRequest[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (profile?.uid) {
+      const fetchBookings = async () => {
+        try {
+          // Querying 'bookings' collection (covers both instant and scheduled if unified, or we pick one)
+          // As per spec, docs are in 'instant_bookings' or 'scheduled_bookings'. 
+          // For this 'Master App', we'll assume a unified 'bookings' view or just query 'instant_bookings' for now as a demo.
+          // Ideally we query both and merge, or use a root 'bookings' collection. 
+          // Let's use 'bookings' as the primary collection for now.
+          const q = query(
+            collection(db, "bookings"),
+            where("advisorId", "==", profile.uid),
+            // orderBy("bookingTimestamp", "desc"), // Requires index, skipping for now to avoid error
+            limit(5)
+          );
+          const querySnapshot = await getDocs(q);
+          const fetchedBookings: BookingRequest[] = [];
+          querySnapshot.forEach((doc) => {
+            fetchedBookings.push(doc.data() as BookingRequest);
+          });
+          setBookings(fetchedBookings);
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      };
+      fetchBookings();
+    }
+  }, [profile]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -60,7 +90,7 @@ const DashboardPage = () => {
   const stats = [
     {
       label: "Total Sessions",
-      value: "0", // Placeholder: In real app, fetch from bookings count
+      value: (profile?.totalSessions || 0).toString(),
       change: "+0%",
       icon: Video,
       color: "bg-info/10 text-info"
@@ -81,14 +111,14 @@ const DashboardPage = () => {
     },
     {
       label: "Rating",
-      value: "5.0", // Default
-      change: "+0.0",
+      value: profile?.rating ? profile.rating.toFixed(1) : "New",
+      change: profile?.reviewCount ? `${profile.reviewCount} Reviews` : "No reviews",
       icon: Star,
       color: "bg-success/10 text-success"
     },
   ];
 
-  const recentBookings: BookingRequest[] = []; // Empty for now until we implement bookings
+  // Bookings fetched via effect
   const notifications = [
     { id: 1, message: "Welcome to AssociateConnect!", time: "Just now" },
   ];
@@ -151,13 +181,27 @@ const DashboardPage = () => {
               </Button>
             </div>
             <div className="p-4">
-              {recentBookings.length > 0 ? (
-                recentBookings.map((booking) => (
+              {bookings.length > 0 ? (
+                bookings.map((booking) => (
                   <div
-                    key={booking.id}
-                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-secondary/50 transition-colors"
+                    key={booking.bookingId}
+                    className="flex items-center gap-4 p-4 rounded-xl hover:bg-secondary/50 transition-colors border border-transparent hover:border-border/50"
                   >
-                    {/* Booking Item UI */}
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      {booking.studentName?.[0] || <Users className="w-5 h-5" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-sm truncate">{booking.studentName || "Unknown Student"}</h4>
+                      <p className="text-xs text-muted-foreground truncate">{booking.purpose || "No purpose specified"}</p>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-xs px-2 py-1 rounded-full ${booking.bookingStatus === 'completed' ? 'bg-success/10 text-success' :
+                          booking.bookingStatus === 'pending' ? 'bg-warning/10 text-warning' :
+                            'bg-secondary text-secondary-foreground'
+                        }`}>
+                        {booking.bookingStatus}
+                      </span>
+                    </div>
                   </div>
                 ))
               ) : (

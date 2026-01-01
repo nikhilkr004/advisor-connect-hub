@@ -202,6 +202,9 @@ const OnboardingPage = () => {
           totalLifetimeEarnings: 0,
           pendingBalance: 0,
         },
+        totalSessions: 0,
+        rating: 0,
+        reviewCount: 0,
         fcmToken: "", // Initial empty token
         status: "BUSY", // Default to BUSY until they toggle online
         isVerified: false,

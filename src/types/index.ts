@@ -48,6 +48,9 @@ export interface AdvisorProfile {
     totalLifetimeEarnings: number;
     pendingBalance: number;
   };
+  totalSessions: number;
+  rating: number;
+  reviewCount: number;
   fcmToken?: string; // Optional for now until FCM logic is added
   status: "ONLINE" | "OFFLINE" | "BUSY";
   createdAt: number; // Timestamp
