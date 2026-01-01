@@ -16,7 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { AdvisorProfile } from "@/types";
+import { AdvisorProfile, BookingRequest } from "@/types";
 import { useNavigate } from "react-router-dom";
 
 const DashboardPage = () => {
@@ -89,7 +89,7 @@ const DashboardPage = () => {
     },
   ];
 
-  const recentBookings: any[] = []; // Empty for now until we implement bookings
+  const recentBookings: BookingRequest[] = []; // Empty for now until we implement bookings
   const notifications = [
     { id: 1, message: "Welcome to AssociateConnect!", time: "Just now" },
   ];

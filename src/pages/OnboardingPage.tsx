@@ -109,7 +109,7 @@ const OnboardingPage = () => {
     }
   }, []);
 
-  const updateFormData = (field: string, value: any) => {
+  const updateFormData = (field: string, value: string | number | boolean | string[] | object) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -214,9 +214,9 @@ const OnboardingPage = () => {
 
       toast.success("Application submitted successfully!");
       navigate("/dashboard");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error submitting profile:", error);
-      toast.error("Failed to submit application: " + error.message);
+      toast.error("Failed to submit application: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
       setIsLoading(false);
     }
