@@ -44,6 +44,11 @@ export interface AdvisorProfile {
   education: Education;
   availability: AvailabilityConfig;
   pricing: PricingConfig;
+  earningsInfo: {
+    totalLifetimeEarnings: number;
+    pendingBalance: number;
+  };
+  fcmToken?: string; // Optional for now until FCM logic is added
   status: "ONLINE" | "OFFLINE" | "BUSY";
   createdAt: number; // Timestamp
   updatedAt: number; // Timestamp
@@ -61,25 +66,25 @@ export interface BookingRequest {
   advisorId: string;
   studentName: string;
   studentProfileImage: string;
-  
+
   purpose: string;
   preferredLanguage: string;
   bookingType: CallType;
   urgencyLevel: "Instant" | "Scheduled";
-  
+
   bookingStatus: BookingStatus;
   paymentStatus: PaymentStatus;
-  
-  bookingTimestamp: number; 
+
+  bookingTimestamp: number;
   advisorResponseDeadline: number;
-  
+
   sessionAmount: number;
 }
 
 export interface VideoCallSession {
-  id: string; 
-  callerId: string; 
-  receiverId: string; 
+  id: string;
+  callerId: string;
+  receiverId: string;
   status: "initiated" | "ongoing" | "ended";
   startTime: number;
   endTime?: number;

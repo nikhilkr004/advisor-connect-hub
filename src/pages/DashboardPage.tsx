@@ -67,10 +67,10 @@ const DashboardPage = () => {
       color: "bg-info/10 text-info"
     },
     {
-      label: "Total Students",
-      value: "0",
+      label: "Total Earnings",
+      value: `₹${profile?.earningsInfo?.totalLifetimeEarnings || 0}`,
       change: "+0%",
-      icon: Users,
+      icon: TrendingUp,
       color: "bg-accent/10 text-accent"
     },
     {

@@ -198,6 +198,11 @@ const OnboardingPage = () => {
           ratePerMinute: parseInt(formData.ratePerMinute) || 0,
           ratePerSession: parseInt(formData.ratePerSession) || 0,
         },
+        earningsInfo: {
+          totalLifetimeEarnings: 0,
+          pendingBalance: 0,
+        },
+        fcmToken: "", // Initial empty token
         status: "BUSY", // Default to BUSY until they toggle online
         isVerified: false,
         createdAt: Date.now(),
