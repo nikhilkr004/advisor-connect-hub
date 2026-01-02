@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  Home, 
-  LayoutDashboard, 
-  Wallet, 
-  MessageCircle, 
+import {
+  Home,
+  LayoutDashboard,
+  Wallet,
+  MessageCircle,
   User,
   LogOut,
   Settings,
   Bell,
   Menu,
-  X
+  X,
+  CreditCard,
+  HelpCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -24,8 +26,10 @@ const navItems = [
   { icon: Home, label: "Home", path: "/dashboard" },
   { icon: LayoutDashboard, label: "Analytics", path: "/dashboard/analytics" },
   { icon: Wallet, label: "Earnings", path: "/dashboard/earnings" },
+  { icon: CreditCard, label: "Wallet", path: "/dashboard/wallet" },
   { icon: MessageCircle, label: "Chats", path: "/dashboard/chats" },
   { icon: User, label: "Profile", path: "/dashboard/profile" },
+  { icon: HelpCircle, label: "Support", path: "/dashboard/support" },
 ];
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
@@ -55,11 +59,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 transition-colors ${
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 transition-colors ${isActive
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                  }`}
               >
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.label}</span>
@@ -105,9 +108,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Mobile Sidebar */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
-          <div 
-            className="absolute inset-0 bg-foreground/20 backdrop-blur-sm" 
-            onClick={() => setSidebarOpen(false)} 
+          <div
+            className="absolute inset-0 bg-foreground/20 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
           />
           <motion.aside
             initial={{ x: -280 }}
@@ -137,11 +140,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                     key={item.path}
                     to={item.path}
                     onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 transition-colors ${
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-1 transition-colors ${isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                      }`}
                   >
                     <item.icon className="w-5 h-5" />
                     <span className="font-medium">{item.label}</span>

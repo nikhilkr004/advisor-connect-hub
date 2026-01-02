@@ -168,12 +168,14 @@ const OnboardingPage = () => {
       const profile: AdvisorProfile = {
         uid: user.uid,
         basicInfo: {
+          id: user.uid,
           name: formData.name || user.displayName || "",
           email: formData.email || user.email || "",
           phoneNumber: user.phoneNumber || formData.phoneNumber || "",
           gender: formData.gender,
           city: formData.city,
-          profileImage: user.photoURL || "", // Default from Auth or allow upload
+          profileImage: user.photoURL || "",
+          status: "BUSY"
         },
         professionalInfo: {
           designation: formData.designation,
@@ -181,32 +183,61 @@ const OnboardingPage = () => {
           specializations: formData.specializations,
           experience: parseInt(formData.experience) || 0,
           bio: formData.bio,
+          yearsInOrganization: 0,
+          employeeId: "",
+          officeLocation: "",
+          certifications: [],
+          languages: ["English"], // Default
+          specializationUrls: {}
         },
-        education: {
-          degree: formData.degree,
+        educationInfo: {
+          highestQualification: formData.degree, // Mapping degree to highestQualification
+          qualificationField: formData.degree, // reuse or leave blank
           university: formData.university,
-          certificateUrl: certUrl,
+          highestQualificationUrl: certUrl,
         },
-        availability: {
-          instantChat: formData.instantChat,
-          instantAudio: formData.instantAudio,
-          instantVideo: formData.instantVideo,
+        availabilityInfo: {
           workingDays: formData.workingDays,
-          workingHours: formData.workingHours,
+          workingHoursStart: formData.workingHours.start,
+          workingHoursEnd: formData.workingHours.end,
+          appointmentDuration: 30,
+          scheduledAvailability: {
+            isChatEnabled: true,
+            isAudioCallEnabled: true,
+            isVideoCallEnabled: true,
+            isInPersonEnabled: false,
+            isOfficeVisitEnabled: false
+          },
+          instantAvailability: {
+            isChatEnabled: formData.instantChat,
+            isAudioCallEnabled: formData.instantAudio,
+            isVideoCallEnabled: formData.instantVideo
+          }
         },
-        pricing: {
-          ratePerMinute: parseInt(formData.ratePerMinute) || 0,
-          ratePerSession: parseInt(formData.ratePerSession) || 0,
+        pricingInfo: {
+          instantChatFee: parseInt(formData.ratePerMinute) || 0,
+          instantAudioFee: parseInt(formData.ratePerMinute) || 0,
+          instantVideoFee: parseInt(formData.ratePerMinute) || 0,
+          scheduledChatFee: parseInt(formData.ratePerSession) || 0,
+          scheduledAudioFee: parseInt(formData.ratePerSession) || 0,
+          scheduledVideoFee: parseInt(formData.ratePerSession) || 0,
+          scheduledInPersonFee: 0
         },
         earningsInfo: {
           totalLifetimeEarnings: 0,
+          todayEarnings: 0,
+          thisWeekEarnings: 0,
+          thisMonthEarnings: 0,
           pendingBalance: 0,
+          pendingWithdrawals: 0,
+          totalWithdrawn: 0
         },
+        bankAccounts: [],
         totalSessions: 0,
         rating: 0,
         reviewCount: 0,
-        fcmToken: "", // Initial empty token
-        status: "BUSY", // Default to BUSY until they toggle online
+        fcmToken: "",
+        status: "BUSY",
         isVerified: false,
         createdAt: Date.now(),
         updatedAt: Date.now(),

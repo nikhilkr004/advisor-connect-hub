@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Save, User, Briefcase, GraduationCap, IndianRupee } from "lucide-react";
+import { Loader2, Save, User, Briefcase, IndianRupee, CreditCard } from "lucide-react";
 import { auth, db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { AdvisorProfile } from "@/types";
@@ -72,7 +72,7 @@ const ProfilePage = () => {
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="font-display text-2xl lg:text-3xl font-bold mb-2">My Profile</h1>
-                        <p className="text-muted-foreground">Manage your personal and professional details</p>
+                        <p className="text-muted-foreground">Manage your detailed profile information</p>
                     </div>
                     <Button onClick={handleSave} disabled={isSaving}>
                         {isSaving ? (
@@ -180,6 +180,18 @@ const ProfilePage = () => {
                                     }
                                 />
                             </div>
+                            <div className="space-y-2">
+                                <Label>Department</Label>
+                                <Input
+                                    value={profile.professionalInfo.department}
+                                    onChange={(e) =>
+                                        setProfile({
+                                            ...profile,
+                                            professionalInfo: { ...profile.professionalInfo, department: e.target.value },
+                                        })
+                                    }
+                                />
+                            </div>
                         </div>
                         <div className="space-y-2">
                             <Label>Bio</Label>
@@ -202,37 +214,86 @@ const ProfilePage = () => {
                             <div className="p-2 bg-success/10 rounded-lg text-success">
                                 <IndianRupee className="w-5 h-5" />
                             </div>
-                            <h2 className="font-semibold text-lg">Pricing Configuration</h2>
+                            <h2 className="font-semibold text-lg">Pricing Configuration (Fees)</h2>
                         </div>
                         <div className="grid sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Rate per Minute (Call/Video)</Label>
+                                <Label>Instant Chat Fee (₹)</Label>
                                 <Input
                                     type="number"
-                                    value={profile.pricing.ratePerMinute}
+                                    value={profile.pricingInfo.instantChatFee}
                                     onChange={(e) =>
                                         setProfile({
                                             ...profile,
-                                            pricing: { ...profile.pricing, ratePerMinute: parseInt(e.target.value) || 0 },
+                                            pricingInfo: { ...profile.pricingInfo, instantChatFee: parseInt(e.target.value) || 0 },
                                         })
                                     }
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label>Rate per Session (30 mins)</Label>
+                                <Label>Instant Audio Fee (₹)</Label>
                                 <Input
                                     type="number"
-                                    value={profile.pricing.ratePerSession}
+                                    value={profile.pricingInfo.instantAudioFee}
                                     onChange={(e) =>
                                         setProfile({
                                             ...profile,
-                                            pricing: { ...profile.pricing, ratePerSession: parseInt(e.target.value) || 0 },
+                                            pricingInfo: { ...profile.pricingInfo, instantAudioFee: parseInt(e.target.value) || 0 },
+                                        })
+                                    }
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Instant Video Fee (₹)</Label>
+                                <Input
+                                    type="number"
+                                    value={profile.pricingInfo.instantVideoFee}
+                                    onChange={(e) =>
+                                        setProfile({
+                                            ...profile,
+                                            pricingInfo: { ...profile.pricingInfo, instantVideoFee: parseInt(e.target.value) || 0 },
+                                        })
+                                    }
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Scheduled Video Fee (₹)</Label>
+                                <Input
+                                    type="number"
+                                    value={profile.pricingInfo.scheduledVideoFee}
+                                    onChange={(e) =>
+                                        setProfile({
+                                            ...profile,
+                                            pricingInfo: { ...profile.pricingInfo, scheduledVideoFee: parseInt(e.target.value) || 0 },
                                         })
                                     }
                                 />
                             </div>
                         </div>
                     </div>
+
+                    {/* Bank Accounts (ReadOnly for MVP) */}
+                    <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-2 bg-muted rounded-lg text-muted-foreground">
+                                <CreditCard className="w-5 h-5" />
+                            </div>
+                            <h2 className="font-semibold text-lg">Bank Accounts</h2>
+                        </div>
+                        {profile.bankAccounts && profile.bankAccounts.length > 0 ? (
+                            <ul className="space-y-2">
+                                {profile.bankAccounts.map((account, idx) => (
+                                    <li key={idx} className="p-3 bg-secondary/50 rounded-lg flex justify-between">
+                                        <span>{account.bankName} - {account.accountNumber.slice(-4)}</span>
+                                        <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">{account.isVerified ? "Verified" : "Pending"}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-muted-foreground text-sm">No bank accounts linked. Use the Mobile App to add accounts.</p>
+                        )}
+                    </div>
+
                 </motion.div>
             </div>
         </DashboardLayout>
